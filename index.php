@@ -10,8 +10,9 @@
 	<div class="container">
 		<form method="POST">
 			 <div class="form-group">
-			    <label for="exampleFormControlSelect1">Opções</label>
+			    Opções
 			    <select class="form-control" name="opcoes" id="opcoes">
+			    	  <option value="SEL" selected>Selecione</option> 	
 				      <option value="TD">TD com valor</option>
 				      <option value="TDs">TD sem valor</option>
 				      <option value="NOT">Notificação</option>
@@ -32,27 +33,28 @@
 			</div>
 			<div class="form-group">
 				Qtd Páginas Anexa: 
-				<input type="number" name="anexa" class="form-control"><br/>
+				<input type="number" name="anexa" id="anexa" class="form-control"><br/>
 			</div>
 			<input type="submit" value="Calcular" class="btn btn-primary">
-			<input type="submit" value="Limpar"   class="btn btn-light">
+			<input type="submit" value="Limpar"   class="btn btn-light" onclick="location.reload();">
 		</form>
 	
 	<?php 
 		require 'calculos.php';
-		if(!empty($_POST['opcoes'])){
-			$valor =  $_POST['valor'];
-			$tipo =   $_POST['opcoes'];
-			$paginas =  $_POST['paginas'];
-			$vias =  $_POST['vias'];
-			if($tipo =="TD"){$resultado =  Calculo::calcularTD($valor);}
-			if($tipo =="TDs"){$resultado = Calculo::calcularTDs($paginas,$vias);}
-			
-		}
+			$tipo =  filter_input(INPUT_POST,'opcoes');
+			$valor =  filter_input(INPUT_POST,'valor');
+			$paginas =  filter_input(INPUT_POST,'paginas');
+			$vias =  filter_input(INPUT_POST,'vias');
+		
+
+			$Calculo = new Calculo;
+			if($valor && $tipo =="TD")            {$resultado = $Calculo->calcularTD($valor);}
+			if($paginas && $vias && $tipo =="TDs"){$resultado = $Calculo->calcularTDs($paginas,$vias);}
+		
 
 		
 	?>
-	<?php if(!empty($tipo)):  ?>
+	<?php if(!empty($tipo) && $tipo!='SEL'):  ?>
 		<table class="table table-striped">
 			<thead>
 		      <tr>
@@ -64,7 +66,21 @@
 		      <tr>
 		        <td>Valor consultado</td>
 		        <td><?=($valor)?'R$'.number_format($valor):'----' ?></td>
-		        
+		      </tr>
+		      <?php if($resultado['Tabela']): ?>
+			      <tr>
+			        <td>Tabela</td>
+			        <td><?=$resultado['Tabela']; ?></td>
+			      </tr>
+		  	  <?php endif; ?>
+		      <tr>
+		        <td>Valor Oficial</td>
+		        <td><?='R$ '.number_format($resultado['soma'],2,",",".");  ?> </td>
+		      </tr>
+
+		      <tr>
+		        <td>ISS</td>
+		        <td><?='R$ '.number_format($resultado['ISS'],2,",",".");  ?> </td>
 		      </tr>
 		      <tr>
 		        <td>Total</td>
