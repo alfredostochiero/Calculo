@@ -1,8 +1,8 @@
 <?php
 
 class Calculo {
+	public $valores;
 
-	public $valores = [];
 	public static function calcularTD($valor){
 			if($valor<=70000){
 				$valores[] = 85.89;
@@ -14,7 +14,7 @@ class Calculo {
 			}
 			else if($valor >80000 && $valor<=90000){
 				$valores[] = 467.23;
-				$valores[] = 9.34;
+				$valores[]= 9.34;
 			}
 			else if($valor >90000 && $valor<=100000){
 				$valores[] = 504.20;
@@ -28,9 +28,20 @@ class Calculo {
 				$valores[] = 627.52;
 				$valores[] = 12.55;
 			}
-			$valores[] = $valores[0]+$valores[1];
-			$valores[] = "TD";
+			$valores['resultado'] = $valores[0]+$valores[1];
+			$valores['tipo'] = "TD";
 			return $valores;
+	}
+
+	public static function calcularTDs($paginas,$vias=0){
+		if($paginas>5){
+			$total['resultado'] = 141.86 + (($paginas-5)*3.11)+$vias*14.32;
+		}else {
+			$total['resultado'] = 141.86+($vias*14.32);
+		}
+		$total['tipo'] = "TDs";
+		return  $total;
+		
 	}
 }
 

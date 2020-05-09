@@ -13,7 +13,7 @@
 			    <label for="exampleFormControlSelect1">Opções</label>
 			    <select class="form-control" name="opcoes">
 				      <option value="TD">TD com valor</option>
-				      <option value="TDS">TD sem valor</option>
+				      <option value="TDs">TD sem valor</option>
 				      <option value="NOT">Notificação</option>
 				      
 			     </select>
@@ -40,33 +40,35 @@
 	
 	<?php 
 		require 'calculos.php';
-		if(!empty($_POST['valor']) && !empty($_POST['opcoes'])){
+		if(!empty($_POST['opcoes'])){
 			$valor =  $_POST['valor'];
 			$tipo =   $_POST['opcoes'];
+			$paginas =  $_POST['paginas'];
+			$vias =  $_POST['vias'];
 			if($tipo =="TD"){$resultado =  Calculo::calcularTD($valor);}
-			if($tipo =="TDs"){$resultado = Calculo::calcularTDs($valor);}
+			if($tipo =="TDs"){$resultado = Calculo::calcularTDs($paginas,$vias);}
 			
 		}
 
 		
 	?>
-	<?php if(!empty($valor)):  ?>
+	<?php if(!empty($tipo)):  ?>
 		<table class="table table-striped">
 			<thead>
 		      <tr>
 		        <th>Descrição</th>
-		        <th><?=$resultado[3];?></th>
+		        <th><?=$resultado['tipo'];?></th>
 		      </tr>
 	    	</thead>
 		    <tbody>
 		      <tr>
 		        <td>Valor consultado</td>
-		        <td><?='R$ '.number_format($valor,2,",","."); ?></td>
+		        <td><?='R$ '.number_format($resultado['resultado'],2,",","."); ?></td>
 		        
 		      </tr>
 		      <tr>
 		        <td>Total</td>
-		        <td><?='R$ '.number_format($resultado[2],2,",","."); ?></td>
+		        <td><?='R$ '.number_format($resultado['resultado'],2,",","."); ?></td>
 		      </tr>
 		    </tbody>
 		</table>
