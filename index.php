@@ -11,7 +11,7 @@
 		<form method="POST">
 			 <div class="form-group">
 			    <label for="exampleFormControlSelect1">Opções</label>
-			    <select class="form-control" name="opcoes">
+			    <select class="form-control" name="opcoes" id="opcoes">
 				      <option value="TD">TD com valor</option>
 				      <option value="TDs">TD sem valor</option>
 				      <option value="NOT">Notificação</option>
@@ -20,15 +20,15 @@
   			</div>
 			<div class="form-group">
 				Valor: 
-				<input type="number" name="valor" class="form-control"><br/>
+				<input type="number" name="valor" id="valor" class="form-control"><br/>
 			</div>
 			<div class="form-group">
 				Qtd Páginas: 
-				<input type="number" name="paginas" class="form-control"><br/>
+				<input type="number" name="paginas" id="paginas" class="form-control"><br/>
 			</div>
 			<div class="form-group">
 				Qtd vias: 
-				<input type="number" name="vias" class="form-control"><br/>
+				<input type="number" name="vias" id="vias" class="form-control"><br/>
 			</div>
 			<div class="form-group">
 				Qtd Páginas Anexa: 
@@ -63,7 +63,7 @@
 		    <tbody>
 		      <tr>
 		        <td>Valor consultado</td>
-		        <td><?='R$ '.number_format($resultado['resultado'],2,",","."); ?></td>
+		        <td><?=($valor)?'R$'.number_format($valor):'----' ?></td>
 		        
 		      </tr>
 		      <tr>
@@ -77,6 +77,7 @@
 
 	<script src="assets/js/jquery-3.4.1.min.js" type="text/javascript"></script>	
 	<script src="assets/js/bootstrap.js"        type="text/javascript"></script>
+	<script src="assets/js/script.js"        type="text/javascript"></script>
 </body>
 </html>
 
