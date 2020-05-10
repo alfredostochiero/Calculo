@@ -3,7 +3,7 @@ var valor =  document.getElementById('valor');
 var paginas =  document.getElementById('paginas');
 var vias =  document.getElementById('vias');
 var opcoes =  document.getElementById('opcoes');
-var anexa =  document.getElementById('anexa');
+var deligencia =  document.getElementById('deligencia');
 
 
 
@@ -20,21 +20,21 @@ opcoes.addEventListener("click", function(){
  		valor.disabled = false;
  		paginas.disabled=true;
  		vias.disabled=true;
- 		anexa.disabled = true;
+ 		deligencia.disabled = true;
  		break
 
  		case 'NOT':
  		valor.disabled = true;
  		paginas.disabled=false;
  		vias.disabled=false;
- 		anexa.disabled = false;
+ 		deligencia.disabled = false;
  		break;
 
  		case 'SEL':
  		valor.disabled = false;
  		paginas.disabled=false;
  		vias.disabled=false;
- 		anexa.disabled = false;
+ 		deligencia.disabled = false;
  		break;
 
 	}
