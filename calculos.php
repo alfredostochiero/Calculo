@@ -10,6 +10,7 @@ class Calculo {
 	public $FunEsp_DefPub = 0.05;
 	public $FundEsp_ProRJ = 0.05;
 	public $FundAp_PNat = 0.04;
+	public $distribuidor = 21.80;
 
 
 	// Tabela com margem de valores
@@ -23,23 +24,23 @@ class Calculo {
 		"G"=>'Valor maior que $200.000,00'
 	];
 
-	public function tributosTipo($soma,$tipo,$tabela){
-		$valores['soma'] = $soma;
+	public function tributosTipo($soma,$tipo,$distribuidor,$tabela=""){
+		$valores['base'] = $soma;
+		$valores['distribuidor'] = $distribuidor;
+		$valores['soma'] = $valores['base'] + $valores['distribuidor'];
 		$valores['ISS'] = $valores['soma']*$this->iss;
 		$valores['FunEsp_TJ'] = $valores['soma']*$this->FunEsp_TJ;
 		$valores['FunEsp_DefPub'] = $valores['soma']*$this->FunEsp_DefPub;
 		$valores['FundEsp_ProRJ'] = $valores['soma']*$this->FundEsp_ProRJ;
 		$valores['FundAp_PNat'] = $valores['soma']*$this->FundAp_PNat;
-		$valores['resultado'] = ( 
-			$valores['soma']+$valores['ISS']+$valores['FunEsp_TJ']
-			+$valores['FunEsp_DefPub']+$valores['FundEsp_ProRJ']+$valores['FundAp_PNat']
-		);
+		$valores['resultado'] = array_sum($valores) - $valores['soma']; // soma os valores de todos os itens do array - $valores[soma] que já é a soma de base e distribuidor;
+
 		$valores['tipo'] = $tipo;
 		$valores['Tabela'] = $tabela;
 		return $valores;
 	}
 
-	public  function calcularTD($valor){
+	public  function calcularTD($valor,$paginas=0,$vias=0,$nomes=0){
 		if($valor<=70000){
 			$valores['Tabela'] = $this->tabela['A'];
 			$valores[] = 85.89;
@@ -76,37 +77,66 @@ class Calculo {
 			$n = floor(($valor - 200000)/100000);
 			$valores[] = $n*98.62 + $n*1.97;
 		}
-		$valores['soma'] = $valores[0]+$valores[1];
+		$valores['soma'] = $valores[0]+$valores[1] ;
 
-		return $this->tributosTipo($valores['soma'],"TD",$valores['Tabela']);
+		// Se a qtd de páginas for maior do que 5, adicionar calculo de custo por página excedente
+		if($paginas>5){$valores['soma'] += ($paginas-5)*3.11;}
+
+		// Se a qtd de nomes for superior a 2, adicionar calculo de custo de nome extra ao valor do distribuidor. 
+		if($nomes>2){
+			$valores['distribuidor'] = $this->distribuidor + ( ($nomes-2)*1.02 );
+		}else{
+			$valores['distribuidor'] = $this->distribuidor;
+		}
+
+		
+		return $this->tributosTipo($valores['soma'],"TD com valor",$valores['distribuidor'],$valores['Tabela']);
 
 	}
 
-	public  function calcularTDs($paginas,$vias=0){
-		if($paginas>5){
-			$valores['soma'] = 141.86 + (($paginas-5)*3.11)+$vias*14.32;
-		}else {
-			$valores['soma'] = 141.86+($vias*14.32);
+	public  function calcularTDs($paginas,$vias=0,$nomes=0){
+		
+		$valores['soma'] = 141.86+($vias*14.32);
+		
+		// Se a qtd de páginas for maior do que 5, adicionar calculo de custo por página excedente
+		if($paginas>5){$valores['soma'] += ($paginas-5)*3.11;}
+
+		// Se a qtd de nomes for superior a 2, adicionar calculo de custo de nome extra ao valor do distribuidor. 
+		if($nomes>2){
+			$valores['distribuidor'] = $this->distribuidor + ( ($nomes-2)*1.02 );
+		}else{
+			$valores['distribuidor'] = $this->distribuidor;
 		}
-		return $this->tributosTipo($valores['soma'],"TDs","");
-			
+
 		
-		
+
+
+		return $this->tributosTipo($valores['soma'],"TD sem valor",$valores['distribuidor']);
 	}
 
-	public function calcularNot($paginas,$deligencia){
+	public function calcularNot($paginas,$deligencia,$nomes=0){
 
-		if($paginas>5){
-			$valores['soma'] = 163.44 + (($paginas-5)*3.11) + ($deligencia*21.50);
-		}
-		else {
-		    $valores['soma'] = 163.44 + ($deligencia*21.50);	
+		if($deligencia>3){$deligencia=3;}
+		$valores['soma'] = 163.44 + ($deligencia*21.50);
+
+		if($paginas>5){$valores['soma']+=($paginas-5)*3.11;}
+
+		// Se a qtd de nomes for superior a 2, adicionar calculo de custo de nome extra ao valor do distribuidor. 
+		if($nomes>2){
+			$valores['distribuidor'] = $this->distribuidor + ( ($nomes-2)*1.02 );
+		}else{
+			$valores['distribuidor'] = $this->distribuidor;
 		}
 
-		return $this->tributosTipo($valores['soma'],"NOT","");
+	
+
+
+		return $this->tributosTipo($valores['soma'],"Notificação",$valores['distribuidor']);
 		    
 		} 
 
+
+	// Função que converte número no padrão brasileiro para o padrão PHP. 	
 	public function converter($num){
 		
 		$numero = str_replace(".", "", $num);
